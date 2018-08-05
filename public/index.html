@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+            .chattie-wrapper {
+                height: 500px;
+            }
+            ul.message-board {
+                height: 90%;
+                padding: 0;
+                overflow-y: auto;
+            }
+            li.message-container {
+                margin-top: 15px;
+                list-style-type: none;
+            }
+
+            .message {
+                height: 90%;
+                background-color: lightgrey;
+                list-style-type: none;
+            }
+
+            footer.chattie-footer {
+                height: 10%;
+                width: 100%;
+                background-color: grey;
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div class="map-locator">
+            <!-- PLPLPLPLPLPL! -->
+        </div>
+        <div class="chattie-wrapper">
+            <h2>Messages</h2>
+            <ul class="message-board"></ul>
+            <div class="user-interaction-message"></div>
+            <footer class="chattie-footer">
+                <form>
+                    <input type="text" autofocus autocomplete="off"/>
+                    <button type="submit">Submit</button>
+                </form>
+            </footer>
+            
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="./js/moment.js"></script>
+        <script src="./js/index.js"></script>
+    </body>
+</html>

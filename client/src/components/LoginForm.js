@@ -24,9 +24,10 @@ class LoginForm extends React.Component {
         e.preventDefault();
         const trimmedUserName = this.state.selectedUserName.trim();
 
-        this.props.setUserName(trimmedUserName);
-        this.props.setRoomName(this.state.selectedRoom);
-        this.props.history.push(`/chat/${this.state.selectedRoom}`);
+        this.props.history.push(
+            `/chat/${this.state.selectedRoom}`, 
+            {userName: trimmedUserName, roomName: this.state.selectedRoom}
+        );
     }
 
     render() {
@@ -70,9 +71,7 @@ class LoginForm extends React.Component {
 }
 
 LoginForm.propTypes = {
-    history: PropTypes.object,
-    setUserName: PropTypes.func,
-    setRoomName: PropTypes.func
+    history: PropTypes.object
 };
 
 export default LoginForm;

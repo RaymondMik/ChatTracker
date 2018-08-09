@@ -1,16 +1,19 @@
 import { 
     SET_INPUT_VALUE,
-    SET_USER_NAME,
-    SET_ROOM_NAME,
+    SET_USER_DATA,
     ADD_MESSAGE,
-    SET_USER_IS_TYPING } from '../actions/chatStateActions';
+    SET_ANOTHER_USER_IS_TYPING,
+    SET_ACTIVE_USERS } from '../actions/chatStateActions';
 
 const initialState = {
+    socketId: null,
     userName: '',
     roomName: '',
+    coordinates: '',
     inputValue: '',
+    anotherUserIsTyping: false,
     messages: [],
-    userIsTyping: false
+    activeUsers: []
 };
 
 /**
@@ -22,33 +25,63 @@ const initialState = {
  */
 const chat = (state = initialState, action) => {
     switch (action.type) {
-        case SET_INPUT_VALUE:
+        case SET_INPUT_VALUE: {
             return {
                 ...state,
                 inputValue: action.value
             };
-        case SET_USER_NAME:
-        return {
-            ...state,
-            userName: action.userName
-        };
-        case SET_ROOM_NAME:
-        return {
-            ...state,
-            roomName: action.roomName
-        };
-        case ADD_MESSAGE:
+        }
+        case SET_USER_DATA: {
+            const {socketId, userName, roomName} = action.userData;
+            return {
+                ...state,
+                socketId,
+                userName,
+                roomName
+            };
+        }
+        case ADD_MESSAGE: {
             return {
                 ...state,
                 messages: [...state.messages, action.message]
             };
-        case SET_USER_IS_TYPING:
+        }
+        case SET_ANOTHER_USER_IS_TYPING: {
             return {
                 ...state,
-                userIsTyping: action.userIsTyping
+                anotherUserIsTyping: action.anotherUserIsTyping
             };
-        default:
+        }
+        case SET_ACTIVE_USERS: {
+            console.log(88, action.activeUsers);
+            return {
+                ...state,
+                activeUsers: action.activeUsers
+            };
+        }
+        // TODO Unused reducers, consider if delete them or not
+        // case ADD_ACTIVE_USERS: {
+        //     return {
+        //         ...state,
+        //         activeUsers: [...state.activeUsers, ...action.newActiveUsers]
+        //     };
+        // }
+        // case REMOVE_ACTIVE_USER: {
+        //     const userIndex = state.users.indexOf(action.userName);
+        //     return {
+        //         ...state,
+        //         activeUsers: [...state.activeUsers.slice(0, userIndex), ...state.activeUsers.slice(userIndex + 1)]
+        //     };
+        // }
+        // case REMOVE_ACTIVE_USERS: {
+        //     return {
+        //         ...state,
+        //         activeUsers: []
+        //     };
+        // }
+        default: {
             return state;
+        }
     }
 };
 

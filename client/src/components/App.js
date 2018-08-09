@@ -14,17 +14,16 @@ const App = (props) => {
     return (
         <Switch>
             <Route path='/' exact render={data => (
-                <LoginForm {...data} 
-                    setUserName={props.setUserName}
-                    setRoomName={props.setRoomName}
-                />
+                <LoginForm {...data} />
             )}/>
             <Route path='/chat' render={(data) => (
                 <ChattieContainer {...data} 
                     chatData={props.chat} 
+                    setActiveUsers={props.setActiveUsers}
                     addMessage={props.addMessage}
                     setInputValue={props.setInputValue}
-                    setUserIsTyping={props.setUserIsTyping}
+                    setAnotherUserIsTyping={props.setAnotherUserIsTyping}
+                    setUserData={props.setUserData}
                 />
             )}/>
         </ Switch>
@@ -33,11 +32,11 @@ const App = (props) => {
 
 App.propTypes = {
     chat: PropTypes.object,
+    setActiveUsers: PropTypes.func,
     addMessage: PropTypes.func,
     setInputValue: PropTypes.func,
-    setUserIsTyping: PropTypes.func,
-    setUserName: PropTypes.func,
-    setRoomName: PropTypes.func
+    setAnotherUserIsTyping: PropTypes.func,
+    setUserData: PropTypes.func
 };
 
 export default hot(module)(App);

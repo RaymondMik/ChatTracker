@@ -9,34 +9,47 @@ class ChattieContainer extends React.Component {
     constructor(props) {
         super(props);
         socket = openSocket('http://localhost:5000');
-        const {addMessage, setUserIsTyping, chatData: {userName, roomName}} = props;
+        const {
+            setActiveUsers, 
+            addMessage, 
+            location: {state: {userName, roomName}},
+            setAnotherUserIsTyping, 
+            setUserData } = props;
 
         socket.on('connect', () => {
             const params = {
                 userName,
                 roomName
             };
-
+            // send userName and roomName received via React Router
             socket.emit('join', params, (err) => {
                 if (err) {
-                    alert('User name must not be empty');
+                    alert(err);
                     this.props.history.push('/');
                 }
             });
         });
 
+        // Set data of current user
+        socket.on('setUserData', (userData) => setUserData(userData));
+
+        // Add active user to list
+        socket.on('setActiveUsers', (users) => setActiveUsers(users));
+        
+        // Add message to client
         socket.on('addMessageToClient', (message) => {
             addMessage(message);      
             this.scrollToBottom();
         });
     
-        socket.on('broadcastUserIsTyping', (userIsTyping) => {
-            setUserIsTyping(userIsTyping);
-        });
+        // Set another user is typing state
+        socket.on('broadcastUserIsTyping', (userIsTyping) => setAnotherUserIsTyping(userIsTyping));
     }
 
     componentWillUnmount() {
         socket.disconnect();
+        // reset data for connected user
+        this.props.setUserData({socketId: null, userName: '', roomName: ''});
     }
 
     scrollToBottom() {
@@ -52,7 +65,8 @@ class ChattieContainer extends React.Component {
     }
 
     render() {
-        const {setInputValue, chatData: {userName, inputValue, messages, userIsTyping}} = this.props;
+        const {setInputValue, chatData: {userName, inputValue, messages, anotherUserIsTyping, activeUsers}} = this.props;
+        
         /*window.setInterval(() => {navigator.geolocation.getCurrentPosition((position) => {
             console.log(position);
             // emit event to socket, then in server if position is changed broadcast event
@@ -63,7 +77,6 @@ class ChattieContainer extends React.Component {
             if (!e.target.value.length) {
                 socket.emit('userIsTyping', false);
             } else {
-                console.log('emitting event');
                 socket.emit('userIsTyping', true);
             }
         };
@@ -83,7 +96,7 @@ class ChattieContainer extends React.Component {
             setInputValue('');
         };
     
-        const userIsTypingText = userIsTyping ? 'User is writing something...' : '';
+        const userIsTypingText = anotherUserIsTyping ? 'A user is writing something...' : '';
         
         return (
             <div className="container">
@@ -110,7 +123,9 @@ class ChattieContainer extends React.Component {
                             <button type="submit">Submit</button>
                         </form>
                     </footer>
-                    
+                    <ul>
+                        {activeUsers.length && activeUsers.map((user) => <li key={user.socketId}>{user.userName}</li>)}
+                    </ul>
                 </div>
             </div>
         );
@@ -121,10 +136,14 @@ class ChattieContainer extends React.Component {
 
 ChattieContainer.propTypes = {
     history: PropTypes.object,
+    location: PropTypes.object,
     chatData: PropTypes.object,
+    activeUsers: PropTypes.array,
+    setUserData: PropTypes.func,
+    setActiveUsers: PropTypes.func,
     addMessage: PropTypes.func,
     setInputValue: PropTypes.func,
-    setUserIsTyping: PropTypes.func
+    setAnotherUserIsTyping: PropTypes.func
 };
 
 export default ChattieContainer;

@@ -1,0 +1,19 @@
+{
+    "chat": {
+        "socketId": 0,
+        "userName": "",
+        "roomName": "",
+        "coordinates": "",
+        "inputValue": "",
+        "anotherUserIsTyping": false,
+        "messages": [],
+        "activeUsers": [
+            {
+                "socketId": 0,
+                "userName": "",
+                "roomName": "",
+                "coordinates": ""
+            }
+        ]
+    }
+}

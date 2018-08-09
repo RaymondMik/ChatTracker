@@ -43,7 +43,7 @@ class ChattieContainer extends React.Component {
         });
     
         // Set another user is typing state
-        socket.on('broadcastUserIsTyping', (userIsTyping) => setAnotherUserIsTyping(userIsTyping));
+        socket.on('broadcastUserIsTyping', (data) => setAnotherUserIsTyping(data));
     }
 
     componentWillUnmount() {
@@ -86,7 +86,6 @@ class ChattieContainer extends React.Component {
        
             socket.emit('createMessage', {
                 sender: userName,
-                receiver: 'jillie@poo.com',
                 body: inputValue
             }, function (data) {
                 console.log(`Client got: ${data}`);

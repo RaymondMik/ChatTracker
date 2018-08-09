@@ -47,10 +47,10 @@ io.on('connection', (socket) => {
         // join selected room
         socket.join(roomName);
 
-        // Add new user to server and store it in constant
+        // Add own user data to server and store it in constant
         const newUser = users.addUser(socket.id, userName, roomName)
 
-        // add userData to connected client
+        // add own user data to current client
         socket.emit('setUserData', newUser);
         
         // add user data to all other connected users
@@ -60,24 +60,29 @@ io.on('connection', (socket) => {
         io.to(roomName).emit('setActiveUsers', users.getUserList(roomName));
 
         // broadcast user has joined message
-        socket.broadcast.to(roomName).emit('addMessageToClient', generateMessage({sender: 'Admin', receiver: '', body: `${userName} has joined the conversation`}));
+        socket.broadcast.to(roomName).emit('addMessageToClient', generateMessage({sender: 'Admin', body: `${userName} has joined the conversation`}));
     
-        // emit message sent by user
-        socket.emit('addMessageToClient', generateMessage({sender: 'Admin', receiver: '', body: `Welcome ${userName}`}));
+        // emit welcome message just to connected user
+        socket.emit('addMessageToClient', generateMessage({sender: 'Admin', body: `Welcome ${userName}`}));
         
         callback();
     });
 
     socket.on('userIsTyping', (userIsTyping) => {
-        console.log('server - userIsTyping: ' + userIsTyping);
-        socket.broadcast.emit('broadcastUserIsTyping', userIsTyping);
+        const user = users.getUser(socket.id);
+        socket.broadcast.to(user.roomName).emit('broadcastUserIsTyping', userIsTyping);
     }); 
 
     socket.on('createMessage', (message, callback) => {
-        // emit event to all connections
-        console.log(message + ' has been created');
-        io.emit('addMessageToClient', generateMessage(message));
-        callback('server acknolwedged message creation');
+        const user = users.getUser(socket.id);
+        if (user && isRealString(message.body)) {
+            // emit event to all connections in that room
+            io.to(user.roomName).emit('addMessageToClient', generateMessage(message));
+            console.log(message + ' has been created');
+            callback('server acknolwedged message creation');
+        } else {
+            calback('There was an error while creating message')
+        }
     });
 });
 

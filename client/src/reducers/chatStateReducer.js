@@ -53,7 +53,6 @@ const chat = (state = initialState, action) => {
             };
         }
         case SET_ACTIVE_USERS: {
-            console.log(88, action.activeUsers);
             return {
                 ...state,
                 activeUsers: action.activeUsers

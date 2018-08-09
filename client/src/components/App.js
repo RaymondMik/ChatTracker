@@ -16,7 +16,7 @@ const App = (props) => {
             <Route path='/' exact render={data => (
                 <LoginForm {...data} />
             )}/>
-            <Route path='/chat' render={(data) => (
+            <Route path='/chat/:roomName' exact render={data => (
                 <ChattieContainer {...data} 
                     chatData={props.chat} 
                     setActiveUsers={props.setActiveUsers}

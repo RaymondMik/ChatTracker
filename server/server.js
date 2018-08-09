@@ -68,9 +68,10 @@ io.on('connection', (socket) => {
         callback();
     });
 
+    // TODO if user is typing update user using users object
     socket.on('userIsTyping', (userIsTyping) => {
         const user = users.getUser(socket.id);
-        socket.broadcast.to(user.roomName).emit('broadcastUserIsTyping', userIsTyping);
+        socket.broadcast.to(user.roomName).emit('broadcastUserIsTyping', {socketId: socket.id});
     }); 
 
     socket.on('createMessage', (message, callback) => {

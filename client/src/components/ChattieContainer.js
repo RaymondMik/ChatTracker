@@ -8,6 +8,10 @@ let socket;
 class ChattieContainer extends React.Component {
     constructor(props) {
         super(props);
+
+        // if user tries to access page directly, redirect him/her to login page
+        if (!props.location.state) this.props.history.push('/');
+
         socket = openSocket('http://localhost:5000');
         const {
             setActiveUsers, 

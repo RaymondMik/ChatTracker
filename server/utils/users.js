@@ -4,11 +4,10 @@
 class Users {
     constructor () {
         this.users = [];
-        console.log('users list: ' + this.users);
     }
 
-    addUser (socketId, userName, roomName) {
-        const user = {socketId, userName, roomName};
+    addUser (socketId, userName, roomName, coordinates, userIsTyping) {
+        const user = {socketId, userName, roomName, coordinates, userIsTyping};
         this.users.push(user);
         
         return user;

@@ -12,7 +12,8 @@
                 "socketId": 0,
                 "userName": "",
                 "roomName": "",
-                "coordinates": ""
+                "coordinates": "",
+                "isTyping": false
             }
         ]
     }

@@ -47,13 +47,13 @@ class ChattieContainer extends React.Component {
         });
     
         // Set another user is typing state
-        socket.on('broadcastUserIsTyping', (data) => setAnotherUserIsTyping(data));
+        socket.on('broadcastUserIsTyping', (socketId, isTyping) => setAnotherUserIsTyping(socketId, isTyping));
     }
 
     componentWillUnmount() {
         socket.disconnect();
         // reset data for connected user
-        this.props.setUserData({socketId: null, userName: '', roomName: ''});
+        this.props.setUserData({socketId: null, userName: '', roomName: '', coordinates: '', isTyping: false});
     }
 
     scrollToBottom() {
@@ -127,7 +127,9 @@ class ChattieContainer extends React.Component {
                         </form>
                     </footer>
                     <ul>
-                        {activeUsers.length && activeUsers.map((user) => <li key={user.socketId}>{user.userName}</li>)}
+                        {activeUsers.length && activeUsers.map((user) => {
+                            return <li key={user.socketId}>{user.userName}{user.isTyping && <span> is writing something...</span>}</li>;
+                        })}
                     </ul>
                 </div>
             </div>

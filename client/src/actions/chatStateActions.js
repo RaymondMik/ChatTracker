@@ -49,13 +49,15 @@ export const addMessage = (message) => {
 /**
  * Set user is typing status.
  * 
- * @argument {boolean} setUserIsTyping.
+ * @argument {String} socketId
+ * @argument {boolean} isTyping
  * @returns {Object} action.
  */
-export const setAnotherUserIsTyping = (anotherUserIsTyping) => {
+export const setAnotherUserIsTyping = (socketId, isTyping) => {
     return {
         type: SET_ANOTHER_USER_IS_TYPING,
-        anotherUserIsTyping
+        socketId,
+        isTyping
     };
 };
 

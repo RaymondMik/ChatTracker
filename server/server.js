@@ -19,6 +19,7 @@ app.use(express.static(publicPath));
 // Web Socket
 io.on('connection', (socket) => {
     console.log(`user: ${socket.id} just connected`);
+
     socket.on('disconnect', () => {
         console.log(`user: ${socket.id} was disconnected`);
         // delete current user
@@ -48,13 +49,10 @@ io.on('connection', (socket) => {
         socket.join(roomName);
 
         // Add own user data to server and store it in constant
-        const newUser = users.addUser(socket.id, userName, roomName)
+        const newUser = users.addUser(socket.id, userName, roomName, 0, false);
 
         // add own user data to current client
         socket.emit('setUserData', newUser);
-        
-        // add user data to all other connected users
-        //socket.broadcast.to(roomName).emit('addActiveUser', newUser);
     
         // update list for users in that room
         io.to(roomName).emit('setActiveUsers', users.getUserList(roomName));
@@ -68,10 +66,10 @@ io.on('connection', (socket) => {
         callback();
     });
 
-    // TODO if user is typing update user using users object
+    // TODO 
     socket.on('userIsTyping', (userIsTyping) => {
         const user = users.getUser(socket.id);
-        socket.broadcast.to(user.roomName).emit('broadcastUserIsTyping', {socketId: socket.id});
+        socket.broadcast.to(user.roomName).emit('broadcastUserIsTyping', socket.id, userIsTyping);
     }); 
 
     socket.on('createMessage', (message, callback) => {
@@ -79,7 +77,6 @@ io.on('connection', (socket) => {
         if (user && isRealString(message.body)) {
             // emit event to all connections in that room
             io.to(user.roomName).emit('addMessageToClient', generateMessage(message));
-            console.log(message + ' has been created');
             callback('server acknolwedged message creation');
         } else {
             calback('There was an error while creating message')

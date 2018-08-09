@@ -47,9 +47,13 @@ const chat = (state = initialState, action) => {
             };
         }
         case SET_ANOTHER_USER_IS_TYPING: {
+            const activeUsersCopy = [...state.activeUsers];
+            const user = activeUsersCopy.find(({socketId}) => socketId === action.socketId);
+            user.isTyping = action.isTyping;
+            
             return {
                 ...state,
-                anotherUserIsTyping: action.anotherUserIsTyping
+                activeUsers: activeUsersCopy
             };
         }
         case SET_ACTIVE_USERS: {

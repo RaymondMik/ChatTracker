@@ -19,6 +19,7 @@ app.use(express.static(publicPath));
 // Web Socket
 io.on('connection', (socket) => {
     console.log(`user: ${socket.id} just connected`);
+    console.log(Object.keys(io.sockets.sockets));
 
     socket.on('disconnect', () => {
         console.log(`user: ${socket.id} was disconnected`);
@@ -32,7 +33,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('join', (params, callback) => {
-        const {userName, roomName} = params;
+        const {userName, roomName, coordinates} = params;
    
         // validate user and room names
         if (!isRealString(userName) || !isRealString(roomName)) callback('Name and room are required');
@@ -49,7 +50,7 @@ io.on('connection', (socket) => {
         socket.join(roomName);
 
         // Add own user data to server and store it in constant
-        const newUser = users.addUser(socket.id, userName, roomName, 0, false);
+        const newUser = users.addUser(socket.id, userName, roomName, coordinates, false);
 
         // add own user data to current client
         socket.emit('setUserData', newUser);
@@ -66,7 +67,6 @@ io.on('connection', (socket) => {
         callback();
     });
 
-    // TODO 
     socket.on('userIsTyping', (userIsTyping) => {
         const user = users.getUser(socket.id);
         socket.broadcast.to(user.roomName).emit('broadcastUserIsTyping', socket.id, userIsTyping);

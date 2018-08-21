@@ -2,6 +2,7 @@ import React from 'react';
 import openSocket from 'socket.io-client';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import MapTracker from './MapTracker';
 
 let socket; 
 
@@ -20,10 +21,18 @@ class ChattieContainer extends React.Component {
             setAnotherUserIsTyping, 
             setUserData } = props;
 
+        let coordinates = {};
+
+        navigator.geolocation.getCurrentPosition((position) => {
+            coordinates.lat = position.coords.latitude;
+            coordinates.lng = position.coords.longitude;
+        });
+
         socket.on('connect', () => {
             const params = {
                 userName,
-                roomName
+                roomName,
+                coordinates
             };
             // send userName and roomName received via React Router
             socket.emit('join', params, (err) => {
@@ -70,7 +79,6 @@ class ChattieContainer extends React.Component {
 
     render() {
         const {setInputValue, chatData: {userName, inputValue, messages, anotherUserIsTyping, activeUsers}} = this.props;
-        
         /*window.setInterval(() => {navigator.geolocation.getCurrentPosition((position) => {
             console.log(position);
             // emit event to socket, then in server if position is changed broadcast event
@@ -103,8 +111,10 @@ class ChattieContainer extends React.Component {
         
         return (
             <div className="container">
-                <div className="map-locator">
-                </div>
+                <MapTracker 
+                    activeUsers={activeUsers}
+                    isMarkerShown={true}
+                />
                 <div className="chattie-wrapper">
                     <h2>Messages</h2>
                     <ul className="message-board">
